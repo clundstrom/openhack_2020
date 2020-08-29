@@ -1,5 +1,5 @@
 from flask import Blueprint, request, make_response, abort
-from auth.auth import validate, authenticate
+from auth.auth import authenticate
 from src.auth import connect as conn
 from src.interfaces.open_interface import sql
 from src.auth import auth
@@ -16,7 +16,7 @@ def test():
 @open_routes.route("/test_auth", methods=['GET'])
 @authenticate
 def test_auth():
-    return make_response('Connection OK', 200)
+    return make_response('Authorized', 200)
 
 
 @open_routes.route("/get_user/", methods=['GET'])

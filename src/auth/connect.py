@@ -29,5 +29,8 @@ def execute(query, *args):
 
         rv = cur.fetchall()
         return jsonify(rv)
+
+    except Exception as error:
+        print(error)
     except db.Error as e:
         print(f"Error: {e}")

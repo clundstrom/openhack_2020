@@ -6,6 +6,9 @@ from src.auth import connect as conn
 
 
 def authenticate(func):
+    """
+    Decorator that wraps
+    """
     def wrap(*args, **kwargs):
         if validate(request.json):
             return func(*args, **kwargs)
@@ -19,9 +22,10 @@ def validate(request):
         if request['token'] and request['username']:
             query = sql('GET_USER_BY_NAME')
             res = conn.execute(query, (request['username'],))
-            token = res.json[0][5]
-            if token == request['token']:
-                return True
+            if res.json:
+                token = res.json[0][5]
+                if token == request['token']:
+                    return True
     return False
 
 
