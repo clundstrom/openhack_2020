@@ -1,7 +1,8 @@
 import hashlib
 import os
-from flask import request, abort
+from flask import request, abort, make_response
 from interfaces.open_interface import sql
+from models.http import status_code
 from src.auth import connect as conn
 
 
@@ -13,7 +14,7 @@ def authenticate(func):
         if validate(request.json):
             return func(*args, **kwargs)
         else:
-            return abort(401)
+            return make_response(status_code(401), 401)
     return wrap
 
 

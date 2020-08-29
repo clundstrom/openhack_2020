@@ -1,5 +1,6 @@
 from flask import Blueprint, request, make_response
 from auth.auth import authenticate
+from models.http import status_code, status_custom
 from src.auth import connect as conn
 from src.interfaces.open_interface import sql
 from src.auth import auth
@@ -53,17 +54,12 @@ def register():
                 "password": data.get('password')
             }
             return login(user)
-        else:
-            make_response({"message": "Username taken"}, 400)
-
     else:
-        return make_response({"message": "Bad request"}, 400)
-
-    response = {"message": "Registration successful"}
-    return make_response(response, 200)
+        return make_response(status_code(400), 400)
+    return make_response(status_custom("Registration successful"), 200)
 
 
-@open_routes.route("/login", methods=['GET'])
+#@open_routes.route("/login", methods=['GET'])
 def login(param):
     if param:
         data = param
@@ -74,7 +70,7 @@ def login(param):
         query = sql('GET_USER_BY_NAME', data.get('username'))
         user = conn.execute(query, data.get('username')).json
         if not user:
-            return make_response('No such user.', 200)
+            return make_response(status_custom("No such user"), 200)
         user = user[0]
         if auth.is_valid_login(data.get('password'), user[2]):
             token = uuid.uuid4().hex
@@ -86,5 +82,5 @@ def login(param):
             return make_response(user, 200)
 
         else:
-            return make_response({"message": "Unauthorized"}, 401)
-    return make_response({"message": "Bad request"}, 400)
+            return make_response(status_code(200), 200)
+    return make_response(status_code(400), 400)
