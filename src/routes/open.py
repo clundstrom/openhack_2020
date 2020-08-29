@@ -10,13 +10,15 @@ open_routes = Blueprint('open_routes', __name__)
 
 @open_routes.route("/test", methods=['GET'])
 def test():
-    return make_response('Connection OK', 200)
+    response = {"message": "Connection OK"}
+    return make_response(response, 200)
 
 
 @open_routes.route("/test_auth", methods=['GET'])
 @authenticate
 def test_auth():
-    return make_response('Authorized', 200)
+    response = {"message": "Authorized"}
+    return make_response(response, 200)
 
 
 @open_routes.route("/get_user/", methods=['GET'])
@@ -54,7 +56,8 @@ def register():
     else:
         return abort(400)
 
-    return make_response('Registration successful', 200)
+    response = {"message": "Registration successful"}
+    return make_response(response, 200)
 
 
 @open_routes.route("/login", methods=['GET'])
@@ -77,5 +80,6 @@ def login():
             return make_response(user, 200)
 
         else:
-            return make_response('Access denied.', 401)
+            response = {"message": "Access denied"}
+            return make_response(response, 401)
     return abort(400)

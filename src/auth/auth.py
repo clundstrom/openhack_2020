@@ -7,7 +7,7 @@ from src.auth import connect as conn
 
 def authenticate(func):
     """
-    Decorator that wraps
+    Decorator that wraps functions and forces authentication
     """
     def wrap(*args, **kwargs):
         if validate(request.json):

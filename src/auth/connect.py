@@ -34,3 +34,4 @@ def execute(query, *args):
         print(error)
     except db.Error as e:
         print(f"Error: {e}")
+
