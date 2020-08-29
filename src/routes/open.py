@@ -47,4 +47,22 @@ def register():
     else:
         return make_response('Bad request', 400)
 
-    return res
+    return make_response('Registration successful', 200)
+
+
+@open_routes.route("/login", methods=['GET'])
+def login():
+    data = request.json
+
+    if data['username'] and data['password']:
+        query = sql(Req.GET_USER_BY_NAME, data['username'])
+        user = conn.execute(query, data['username']).json
+        user = user[0]
+        if auth.is_valid_login(data['password'], user[2]):
+
+
+            return make_response('Login successful', 200)
+
+
+        else:
+            return make_response('Access denied.', 401)
