@@ -40,14 +40,14 @@ def get_abort():
 @open_routes.route("/register", methods=['POST'])
 def register():
     data = request.json
-    if data['username'] and data['password']:
-        query = sql('GET_USER_BY_NAME', data['username'])
-        res = conn.execute(query, data['username'])
+    if data.get('username') and data('password'):
+        query = sql('GET_USER_BY_NAME', data.get('username'))
+        res = conn.execute(query, data.get('username'))
 
         if len(res.json) != 1:
-            hash = auth.hash_password(password=data['password'])
-            query = sql('POST_REGISTER_USER', data['username'], hash)
-            conn.execute(query, data['username'], hash)
+            hash = auth.hash_password(password=data.get('password'))
+            query = sql('POST_REGISTER_USER', data.get('username'), hash)
+            conn.execute(query, data.get('username'), hash)
         else:
             abort(400, 'Username taken.')
 
@@ -61,13 +61,13 @@ def register():
 def login():
     data = request.json
 
-    if data['username'] and data['password']:
-        query = sql('GET_USER_BY_NAME', data['username'])
-        user = conn.execute(query, data['username']).json
+    if data.get('username') and data.get('password'):
+        query = sql('GET_USER_BY_NAME', data.get('username'))
+        user = conn.execute(query, data.get('username')).json
         if not user:
             return make_response('No such user.', 200)
         user = user[0]
-        if auth.is_valid_login(data['password'], user[2]):
+        if auth.is_valid_login(data.get('password'), user[2]):
             token = uuid.uuid4().hex
             query = sql('POST_UPDATE_TOKEN')
             conn.execute(query, token, user[0])
@@ -78,3 +78,4 @@ def login():
 
         else:
             return make_response('Access denied.', 401)
+    return abort(400)
