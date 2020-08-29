@@ -1,7 +1,17 @@
 import hashlib
 import os
+from flask import request, abort
 from interfaces.open_interface import sql
 from src.auth import connect as conn
+
+
+def authenticate(func):
+    def wrap(*args, **kwargs):
+        if validate(request.json):
+            return func(*args, **kwargs)
+        else:
+            return abort(401)
+    return wrap
 
 
 def validate(request):
@@ -9,8 +19,9 @@ def validate(request):
         if request['token'] and request['username']:
             query = sql('GET_USER_BY_NAME')
             res = conn.execute(query, (request['username'],))
-
-            return res
+            token = res.json[0][5]
+            if token == request['token']:
+                return True
     return False
 
 
