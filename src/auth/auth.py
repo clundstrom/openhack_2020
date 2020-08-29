@@ -19,7 +19,7 @@ def authenticate(func):
 
 def validate(request):
     if request is not None:
-        if request['token'] and request['username']:
+        if request.get('token') and request.get('username'):
             query = sql('GET_USER_BY_NAME')
             res = conn.execute(query, (request['username'],))
             if res.json:

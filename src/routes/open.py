@@ -40,7 +40,7 @@ def get_abort():
 @open_routes.route("/register", methods=['POST'])
 def register():
     data = request.json
-    if data.get('username') and data('password'):
+    if data.get('username') and data.get('password'):
         query = sql('GET_USER_BY_NAME', data.get('username'))
         res = conn.execute(query, data.get('username'))
 
@@ -52,7 +52,7 @@ def register():
             abort(400, 'Username taken.')
 
     else:
-        return make_response('Bad request', 400)
+        return abort(400)
 
     return make_response('Registration successful', 200)
 

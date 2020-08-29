@@ -3,8 +3,6 @@ from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS
 from environs import Env
-from flask_jwt import JWT, jwt_required, current_identity
-from routes import open
 import os
 
 
