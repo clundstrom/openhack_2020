@@ -22,8 +22,10 @@ def execute(query, *args):
         cur = conn.cursor()
         if args:
             cur.execute(query, args)
+            conn.commit()
         else:
             cur.execute(query)
+            conn.commit()
 
         rv = cur.fetchall()
         return jsonify(rv)
