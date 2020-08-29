@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `hash` varchar(128) DEFAULT NULL,
     `address` varchar(82) DEFAULT NULL,
     `phone_number` varchar(82) DEFAULT NULL,
+    `token` varchar(128) DEFAULT NULL,
     `fk_community_ids` varchar(20) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE (`name`),

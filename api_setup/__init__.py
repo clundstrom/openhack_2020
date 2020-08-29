@@ -3,6 +3,8 @@ from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS
 from environs import Env
+from flask_jwt import JWT, jwt_required, current_identity
+from routes import open
 import os
 
 
@@ -27,6 +29,7 @@ def create_api():
     app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER')
     app.config['MYSQL_PORT'] = os.environ.get('MYSQL_PORT')
     app.config['DEBUG'] = os.environ.get('DEBUG')
+    app.config['SECRET_KEY'] = 'jwt_omega_secret'
 
     # Setup RESTFUL and CORS
     api.init_app(app)

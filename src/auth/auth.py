@@ -1,5 +1,17 @@
 import hashlib
 import os
+from interfaces.open_interface import sql
+from src.auth import connect as conn
+
+
+def validate(request):
+    if request is not None:
+        if request['token'] and request['username']:
+            query = sql('GET_USER_BY_NAME')
+            res = conn.execute(query, (request['username'],))
+
+            return res
+    return False
 
 
 def hash_password(password):
