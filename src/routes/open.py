@@ -1,4 +1,4 @@
-from flask import Blueprint, request, make_response, abort
+from flask import Blueprint, request, make_response
 from auth.auth import authenticate
 from src.auth import connect as conn
 from src.interfaces.open_interface import sql
@@ -10,15 +10,13 @@ open_routes = Blueprint('open_routes', __name__)
 
 @open_routes.route("/test", methods=['GET'])
 def test():
-    response = {"message": "Connection OK"}
-    return make_response(response, 200)
+    return make_response({"message": "Connection OK"}, 200)
 
 
 @open_routes.route("/test_auth", methods=['GET'])
 @authenticate
 def test_auth():
-    response = {"message": "Authorized"}
-    return make_response(response, 200)
+    return make_response({"message": "Authorized"}, 200)
 
 
 @open_routes.route("/get_user/", methods=['GET'])
@@ -36,7 +34,7 @@ def get_user():
 
 @open_routes.route("/abort", methods=['GET'])
 def get_abort():
-    return abort(404)
+    return make_response({"message": "Not found"}, 400)
 
 
 @open_routes.route("/register", methods=['POST'])
@@ -50,19 +48,27 @@ def register():
             hash = auth.hash_password(password=data.get('password'))
             query = sql('POST_REGISTER_USER', data.get('username'), hash)
             conn.execute(query, data.get('username'), hash)
+            user = {
+                "username": data.get('username'),
+                "password": data.get('password')
+            }
+            return login(user)
         else:
-            abort(400, 'Username taken.')
+            make_response({"message": "Username taken"}, 400)
 
     else:
-        return abort(400)
+        return make_response({"message": "Bad request"}, 400)
 
     response = {"message": "Registration successful"}
     return make_response(response, 200)
 
 
 @open_routes.route("/login", methods=['GET'])
-def login():
-    data = request.json
+def login(param):
+    if param:
+        data = param
+    else:
+        data = request.json
 
     if data.get('username') and data.get('password'):
         query = sql('GET_USER_BY_NAME', data.get('username'))
@@ -80,6 +86,5 @@ def login():
             return make_response(user, 200)
 
         else:
-            response = {"message": "Access denied"}
-            return make_response(response, 401)
-    return abort(400)
+            return make_response({"message": "Unauthorized"}, 401)
+    return make_response({"message": "Bad request"}, 400)
