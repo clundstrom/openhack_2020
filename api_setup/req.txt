@@ -1,5 +1,7 @@
 Flask==1.1.2
-PyMySQL==0.10.0
+Flask_JWT==0.3.2
+auto_mix_prep==0.2.0
 environs==8.0.0
 flask_cors==3.0.8
 flask_restful==0.3.8
+routes==2.4.1
