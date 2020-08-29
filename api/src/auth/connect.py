@@ -4,11 +4,12 @@ from flask import current_app, jsonify
 DEFAULT_PORT = 3306
 
 
-def execute(query):
+def execute(query, *args):
     """
     This function opens a connection to the database,
     executes and commits a supplied query.
     :param query: string SQL syntax
+    :param args: parameters supplied with query. Parameterized queries prevents injection attacks.
     :return: Results of the query.
     """
     try:
@@ -19,7 +20,11 @@ def execute(query):
                           port=int(config['MYSQL_PORT']),
                           database=config['MYSQL_DATABASE'])
         cur = conn.cursor()
-        cur.execute(query)
+        if args:
+            cur.execute(query, args)
+        else:
+            cur.execute(query)
+
         rv = cur.fetchall()
         return jsonify(rv)
     except db.Error as e:
