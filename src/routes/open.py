@@ -1,4 +1,4 @@
-from flask import Blueprint, request, make_response, abort
+from flask import Blueprint, request, make_response, abort, jsonify
 from auth.auth import authenticate
 from models.http import status_code, status_custom
 from src.auth import connect as conn
@@ -36,6 +36,25 @@ def get_user():
 @open_routes.route("/abort", methods=['GET'])
 def get_abort():
     return abort(404)
+
+@open_routes.route("/community", methods=['GET'])
+def get_communities():
+
+    if request.args.get('area'):
+        query = sql('GET_COMMUNITY_BY_AREA')
+        res = conn.execute(query, request.args.get('area'))
+
+    elif request.args.get('name'):
+        query = sql('GET_COMMUNITY_BY_NAME')
+        likeStr = "%" + request.args.get('name') +"%"
+        res = conn.execute(query, likeStr)
+
+    else:
+        query = sql('GET_ALL_COMMUNITIES')
+        res = conn.execute(query)
+
+    return make_response(res, 200)
+
 
 
 @open_routes.route("/register", methods=['POST'])
