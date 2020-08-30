@@ -1,12 +1,14 @@
 # Openhack 2020
 
-Entry for openhack 2020. 
+This is an entry for [Openhack 2020](https://gbg.openhack.io/) hackathon. 
+This prototype provides a containerized database and an API backend for [OpenShare](https://github.com/HannesHaggander/openhackgbg-2020-android)
+which intend to encourage "reduce and reuse" in a circular economy system.
 
-By [Christoffer Lundström](https://github.com/clundstrom) and [Hannes Häggander](https://github.com/HannesHaggander).
+By sharing seldomly used products by means of an easily accessible platform, consumers in small community clusters can reduce their CO2 footprint.
 
 
 
-### Docker
+### Container environment
 
 * Requires Docker 19.03 and docker-compose 3.8 
 
