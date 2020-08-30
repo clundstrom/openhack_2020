@@ -2,7 +2,7 @@ import hashlib
 import os
 from flask import request, abort
 from interfaces.open_interface import sql
-from src.auth import connect as conn
+from auth import connect as conn
 
 
 def authenticate(func):

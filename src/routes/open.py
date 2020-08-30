@@ -1,9 +1,9 @@
-from flask import Blueprint, request, make_response, abort, jsonify
+from flask import Blueprint, request, make_response, abort
 from auth.auth import authenticate
 from models.http import status_code, status_custom
-from src.auth import connect as conn
-from src.interfaces.open_interface import sql
-from src.auth import auth
+from auth import connect as conn
+from interfaces.open_interface import sql
+from auth import auth
 import uuid
 
 open_routes = Blueprint('open_routes', __name__)
@@ -37,6 +37,7 @@ def get_user():
 def get_abort():
     return abort(404)
 
+
 @open_routes.route("/community", methods=['GET'])
 def get_communities():
 
@@ -54,7 +55,6 @@ def get_communities():
         res = conn.execute(query)
 
     return make_response(res, 200)
-
 
 
 @open_routes.route("/register", methods=['POST'])

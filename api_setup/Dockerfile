@@ -13,3 +13,5 @@ USER uwsgi
 
 COPY . /api
 WORKDIR /api
+
+ENV PYTHONPATH "${PYTONPATH}:/api/src"
