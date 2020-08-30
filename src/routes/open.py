@@ -1,4 +1,4 @@
-from flask import Blueprint, request, make_response
+from flask import Blueprint, request, make_response, abort
 from auth.auth import authenticate
 from models.http import status_code, status_custom
 from src.auth import connect as conn
@@ -11,13 +11,13 @@ open_routes = Blueprint('open_routes', __name__)
 
 @open_routes.route("/test", methods=['GET'])
 def test():
-    return make_response({"message": "Connection OK"}, 200)
+    return make_response(status_custom("Connection OK"), 200)
 
 
 @open_routes.route("/test_auth", methods=['GET'])
 @authenticate
 def test_auth():
-    return make_response({"message": "Authorized"}, 200)
+    return make_response(status_custom("Authorized"), 200)
 
 
 @open_routes.route("/get_user/", methods=['GET'])
@@ -35,7 +35,7 @@ def get_user():
 
 @open_routes.route("/abort", methods=['GET'])
 def get_abort():
-    return make_response({"message": "Not found"}, 400)
+    return abort(404)
 
 
 @open_routes.route("/register", methods=['POST'])
@@ -55,11 +55,10 @@ def register():
             }
             return login(user)
     else:
-        return make_response(status_code(400), 400)
+        return abort(400)
     return make_response(status_custom("Registration successful"), 200)
 
 
-#@open_routes.route("/login", methods=['GET'])
 def login(param):
     if param:
         data = param
@@ -83,4 +82,4 @@ def login(param):
 
         else:
             return make_response(status_code(200), 200)
-    return make_response(status_code(400), 400)
+    return abort(400)

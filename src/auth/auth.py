@@ -1,8 +1,7 @@
 import hashlib
 import os
-from flask import request, abort, make_response
+from flask import request, abort
 from interfaces.open_interface import sql
-from models.http import status_code
 from src.auth import connect as conn
 
 
@@ -14,11 +13,15 @@ def authenticate(func):
         if validate(request.json):
             return func(*args, **kwargs)
         else:
-            return make_response(status_code(401), 401)
+            return abort(403)
     return wrap
 
 
 def validate(request):
+    """
+    Validates request by comparing token and username supplied
+    in request payload.
+    """
     if request is not None:
         if request.get('token') and request.get('username'):
             query = sql('GET_USER_BY_NAME')
@@ -31,6 +34,10 @@ def validate(request):
 
 
 def hash_password(password):
+    """
+    Hashes password using 100k iterations of pbkdf2 algorithm.
+    @param password Supplied in string format
+    """
     salt = os.urandom(32)
     hash = hashlib.pbkdf2_hmac(
         'sha256',
@@ -46,6 +53,10 @@ def hash_password(password):
 
 
 def is_valid_login(password, old_hash):
+    """
+    Validates login by extracting salt from old hash using it to hash
+    the supplied password before comparison.
+    """
     salt = bytes.fromhex(old_hash[-64:])
     new_hash = hashlib.pbkdf2_hmac(
         'sha256',
