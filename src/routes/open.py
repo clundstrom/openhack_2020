@@ -1,6 +1,6 @@
 from flask import Blueprint, request, make_response, abort
 from auth.auth import authenticate
-from models.http import status_code, status_custom
+from models.http import status_custom
 from auth import connect as conn
 from interfaces.open_interface import sql
 from auth import auth
@@ -40,14 +40,13 @@ def get_abort():
 
 @open_routes.route("/community", methods=['GET'])
 def get_communities():
-
     if request.args.get('area'):
         query = sql('GET_COMMUNITY_BY_AREA')
         res = conn.execute(query, request.args.get('area'))
 
     elif request.args.get('name'):
         query = sql('GET_COMMUNITY_BY_NAME')
-        likeStr = "%" + request.args.get('name') +"%"
+        likeStr = "%" + request.args.get('name') + "%"
         res = conn.execute(query, likeStr)
 
     else:
@@ -68,21 +67,16 @@ def register():
             hash = auth.hash_password(password=data.get('password'))
             query = sql('POST_REGISTER_USER', data.get('username'), hash)
             conn.execute(query, data.get('username'), hash)
-            user = {
-                "username": data.get('username'),
-                "password": data.get('password')
-            }
-            return login(user)
+            return make_response(status_custom("Registration successful"), 200)
+        else:
+            return make_response(status_custom("User already exists."), 200)
     else:
         return abort(400)
-    return make_response(status_custom("Registration successful"), 200)
 
 
-def login(param):
-    if param:
-        data = param
-    else:
-        data = request.json
+@open_routes.route("/login", methods=['GET'])
+def login():
+    data = request.json
 
     if data.get('username') and data.get('password'):
         query = sql('GET_USER_BY_NAME', data.get('username'))
@@ -100,5 +94,6 @@ def login(param):
             return make_response(user, 200)
 
         else:
-            return make_response(status_code(200), 200)
-    return abort(400)
+            return make_response(status_custom("Invalid password"), 200)
+    else:
+        return abort(400)
